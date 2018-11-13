@@ -38,3 +38,8 @@ func New(value interface{}) (*BigDecimal, error) {
 	}
 	return nil, errors.New("value type is not supported")
 }
+
+// Dp getter
+func (t *BigDecimal) Dp() int {
+	return t.dp
+}

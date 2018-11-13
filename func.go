@@ -18,6 +18,7 @@ func (t *BigDecimal) FormatString(valueStr string) (*BigDecimal, error) {
 	if err != nil {
 		return nil, err
 	}
+	// should set value first, then check neg
 	t.dp = dp
 	t.val.SetString(noPointStr, 10)
 	if neg == false && t.val.Sign() >= 0 {
@@ -25,7 +26,7 @@ func (t *BigDecimal) FormatString(valueStr string) (*BigDecimal, error) {
 	} else if neg == true && t.val.Sign() < 0 {
 		return t, nil
 	}
-	return nil, errors.New("negative parse error")
+	return nil, errors.New("shouldn't reach this code")
 }
 
 func scanner(valueStr string) (bool, int, string, error) {
@@ -70,7 +71,19 @@ func scanner(valueStr string) (bool, int, string, error) {
 func (t *BigDecimal) ValString() string {
 	switch t.val.Sign() {
 	case 0:
-		return "0"
+		if t.dp == 0 {
+			return "0"
+		} else if t.dp > 0 {
+			var b bytes.Buffer
+			b.Grow(2 + t.dp)
+			b.WriteRune('0')
+			b.WriteRune('.')
+			for index := 0; index < t.dp; index++ {
+				b.WriteRune('0')
+			}
+			return b.String()
+		}
+		return ""
 	case -1:
 		valStr := t.val.String()
 		var b bytes.Buffer
@@ -125,4 +138,54 @@ func (t *BigDecimal) IncreaseDigit(digitIncreaseBy int) error {
 	t.val.SetString(b.String(), 10)
 	t.dp += digitIncreaseBy
 	return nil
+}
+
+// Add t.Add(t2), automatically increaseDigit
+func (t *BigDecimal) Add(t2 *BigDecimal) error {
+	if t.dp == t2.dp {
+		t.val.Add(t.val, t2.val)
+		return nil
+	}
+	if t.dp < t2.dp {
+		// t todo increaseDigit
+		err := t.IncreaseDigit(t2.dp - t.dp)
+		if err != nil {
+			return err
+		}
+		t.val.Add(t.val, t2.val)
+		return nil
+	} else if t.dp > t2.dp {
+		err := t2.IncreaseDigit(t.dp - t2.dp)
+		if err != nil {
+			return err
+		}
+		t.val.Add(t.val, t2.val)
+		return nil
+	}
+	return errors.New("shouldn't reach this code")
+}
+
+// Sub return t.add(t2.value.neg)
+func (t *BigDecimal) Sub(t2 *BigDecimal) error {
+	if t.dp == t2.dp {
+		t.val.Sub(t.val, t2.val)
+		return nil
+	}
+	if t.dp < t2.dp {
+		// t todo increaseDigit
+		err := t.IncreaseDigit(t2.dp - t.dp)
+		if err != nil {
+			return err
+		}
+		t.val.Sub(t.val, t2.val)
+		return nil
+	} else if t.dp > t2.dp {
+		err := t2.IncreaseDigit(t.dp - t2.dp)
+		if err != nil {
+			return err
+		}
+		t.val.Sub(t.val, t2.val)
+		return nil
+	}
+	return errors.New("shouldn't reach this code")
 }

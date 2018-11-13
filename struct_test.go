@@ -34,4 +34,53 @@ func TestNew(t *testing.T) {
 		fmt.Println(t1.ValString())
 		t.FailNow()
 	}
+
+	t1, err = New("100")
+	t2, err := New("100.00")
+	t1.Add(t2)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+
+	if t1.ValString() != "200.00" || t1.dp != 2 {
+		t.FailNow()
+	}
+	t1, err = New("99")
+	t2, err = New("-100.00")
+	fmt.Println(t2.ValString(), t2.val.String(), t2.dp)
+	t2.Add(t1)
+	fmt.Println(t2.ValString(), t2.val.String(), t2.dp)
+	if t2.ValString() != "-1.00" || t1.dp != 2 {
+		t.FailNow()
+	}
+
+	t1, err = New("99")
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+	t1.IncreaseDigit(2)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+
+	t1, err = New("-99.99")
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+	t1.IncreaseDigit(2)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+
+	t1, err = New("-9.99")
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+	t1.IncreaseDigit(2)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+
+	t1, err = New("-0.0099")
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+	t1.IncreaseDigit(2)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+
+	t1, err = New("-0.0099")
+	t2, err = New("9900")
+	t1.Sub(t2)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+	fmt.Println(t2.ValString(), t2.val.String(), t2.dp)
+
+	t1, err = New("-0.0099")
+	t2, err = New("9900")
+	t2.Sub(t1)
+	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
+	fmt.Println(t2.ValString(), t2.val.String(), t2.dp)
 }
