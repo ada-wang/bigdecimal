@@ -9,6 +9,7 @@ package bigdecimal
 import (
 	"bytes"
 	"errors"
+	"math/big"
 	"strconv"
 )
 
@@ -27,6 +28,12 @@ func (t *BigDecimal) FormatString(valueStr string) (*BigDecimal, error) {
 		return t, nil
 	}
 	return nil, errors.New("shouldn't reach this code")
+}
+
+// SetString for interface just returns error
+func (t *BigDecimal) SetString(valueStr string) error {
+	_, err := t.FormatString(valueStr)
+	return err
 }
 
 func scanner(valueStr string) (bool, int, string, error) {
@@ -188,4 +195,30 @@ func (t *BigDecimal) Sub(t2 *BigDecimal) error {
 		return nil
 	}
 	return errors.New("shouldn't reach this code")
+}
+
+// AddFromStr for interface arg just string
+func (t *BigDecimal) AddFromStr(numStr string) error {
+	num, err := New(numStr)
+	if err != nil {
+		return err
+	}
+	return t.Add(num)
+}
+
+// SubFromStr for interface arg just string
+func (t *BigDecimal) SubFromStr(numStr string) error {
+	num, err := New(numStr)
+	if err != nil {
+		return err
+	}
+	return t.Sub(num)
+}
+
+// IsZero for interface to check t.val is zero or not
+func (t *BigDecimal) IsZero() bool {
+	if t.val.Cmp(big.NewInt(0)) == 0 {
+		return true
+	}
+	return false
 }
