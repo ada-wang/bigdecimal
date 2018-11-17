@@ -222,3 +222,8 @@ func (t *BigDecimal) IsZero() bool {
 	}
 	return false
 }
+
+// Sign -
+func (t *BigDecimal) Sign() int {
+	return t.val.Sign()
+}
