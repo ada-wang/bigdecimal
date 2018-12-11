@@ -132,6 +132,9 @@ func writeBuffer(b *bytes.Buffer, absStr string, dp int) *bytes.Buffer {
 
 // IncreaseDigit to modify decimalPointPosition
 func (t *BigDecimal) IncreaseDigit(digitIncreaseBy int) error {
+	if t == nil || t.val == nil {
+		return errors.New("BigDecimal struct is nil, should New first")
+	}
 	if digitIncreaseBy <= 0 {
 		return errors.New("digitIncreaseBy should greater than 0")
 	}

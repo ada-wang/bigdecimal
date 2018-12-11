@@ -83,4 +83,14 @@ func TestNew(t *testing.T) {
 	t2.Sub(t1)
 	fmt.Println(t1.ValString(), t1.val.String(), t1.dp)
 	fmt.Println(t2.ValString(), t2.val.String(), t2.dp)
+
+	// test IncreaseDigit
+	var t3 BigDecimal
+	err = t3.IncreaseDigit(1)
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		t.Error("t3.IncreaseDigit(1) t3 should New first")
+	}
+
 }
